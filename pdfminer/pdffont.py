@@ -1090,6 +1090,8 @@ class PDFCIDFont(PDFFont):
                 try:
                     self.unicode_map = ttf.create_unicode_map()
                 except TrueTypeFont.CMapNotFound:
+                    # Assuming identity!
+                    self.unicode_map = IdentityUnicodeMap()
                     pass
         else:
             try:
