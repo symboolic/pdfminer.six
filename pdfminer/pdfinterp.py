@@ -364,6 +364,11 @@ class PDFPageInterpreter:
         def get_colorspace(spec: object) -> Optional[PDFColorSpace]:
             if isinstance(spec, list):
                 name = literal_name(spec[0])
+            elif isinstance(spec, dict):
+                try:
+                    name = spec['ColorSpace']
+                except KeyError:
+                    name = literal_name(spec)    
             else:
                 name = literal_name(spec)
             if name == "ICCBased" and isinstance(spec, list) and 2 <= len(spec):

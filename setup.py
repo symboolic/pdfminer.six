@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 
 from setuptools import setup
+from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+
 from os import path
 
 sys.path.append(str(Path(__file__).parent))
@@ -10,9 +12,24 @@ import pdfminer as package  # noqa: E402
 with open(path.join(path.abspath(path.dirname(__file__)), "README.md")) as f:
     readme = f.read()
 
+class bdist_wheel(_bdist_wheel):
+    def get_tag(self):
+        # Get the original tag components
+        python_tag, abi_tag, plat_tag = super().get_tag()
+        
+        # Define your custom build tag
+        build_tag = "symb20231221"
+        
+        # Append or prepend the build tag to the version
+        self.distribution.metadata.version += f".{build_tag}"
+        
+        return python_tag, abi_tag, plat_tag
+
+
 setup(
     name="pdfminer.six",
     version=package.__version__,
+    cmdclass={"bdist_wheel": bdist_wheel,},
     packages=["pdfminer"],
     package_data={"pdfminer": ["cmap/*.pickle.gz", "py.typed"]},
     install_requires=[
